@@ -6,9 +6,9 @@ import org.hibernate.validator.constraints.Range;
 
 @Data
 public class MatchFilter {
-    private Boolean hasPhoto = false;
-    private Boolean inContact = false;
-    private Boolean isFavourite = false;
+    private Boolean hasPhoto;
+    private Boolean inContact;
+    private Boolean isFavourite;
 
     @Range(min = 1, max = 99)
     private Integer minCompatibilityScoreInPercentage;
