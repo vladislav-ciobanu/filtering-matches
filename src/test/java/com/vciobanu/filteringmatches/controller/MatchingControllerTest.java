@@ -58,8 +58,7 @@ public class MatchingControllerTest {
         when(matchingService.findMatches(Mockito.any(MatchSearchFields.class))).thenReturn(matches);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/match")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .accept(MediaType.APPLICATION_JSON);
 
         MockHttpServletResponse response = mockMvc.perform(requestBuilder).andReturn().getResponse();
 

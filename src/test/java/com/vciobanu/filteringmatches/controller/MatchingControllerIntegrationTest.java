@@ -10,13 +10,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +34,6 @@ public class MatchingControllerIntegrationTest {
     @Before
     public void setup() {
         serviceUrl = String.format(URL_PATTERN, port);
-
-        restTemplate.getRestTemplate().setInterceptors(
-                Collections.singletonList((request, body, execution) -> {
-                    request.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-                    return execution.execute(request, body);
-                }));
     }
 
     @Test

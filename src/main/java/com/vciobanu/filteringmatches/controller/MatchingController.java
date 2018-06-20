@@ -20,8 +20,7 @@ public class MatchingController {
     @Autowired
     private MatchingService matchingService;
 
-    @GetMapping(
-            value = "/match", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/match", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public List<Match> match(@Valid MatchSearchFields matchSearchFields) {
         return matchingService.findMatches(matchSearchFields);
