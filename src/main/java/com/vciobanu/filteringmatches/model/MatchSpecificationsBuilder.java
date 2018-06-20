@@ -12,36 +12,40 @@ import javax.persistence.criteria.Root;
 @Component
 public class MatchSpecificationsBuilder {
 
-    public Specification<Match> build(MatchFilter matchFilter) {
-        if (matchFilter == null) {
+    public Specification<Match> build(MatchSearchFields matchSearchFields) {
+        if (matchSearchFields == null) {
             return null;
         }
 
         LinkedList<Specification<Match>> specs = new LinkedList<>();
 
-        buildHasPhotoSpec(matchFilter, specs);
-        buildIsFavouriteSpec(matchFilter, specs);
-        buildInContactSpec(matchFilter, specs);
-        buildRangeSpec(SearchField.AGE, matchFilter.getMinAge(), matchFilter.getMaxAge(), specs);
-        buildRangeSpec(SearchField.HEIGHT_IN_CM, matchFilter.getMinHeightInCm(), matchFilter.getMaxHeightInCm(), specs);
-        buildCompatibilityScoreSpec(matchFilter, specs);
+        buildHasPhotoSpec(matchSearchFields, specs);
+        buildIsFavouriteSpec(matchSearchFields, specs);
+        buildInContactSpec(matchSearchFields, specs);
+        buildRangeSpec(SearchField.AGE, matchSearchFields.getMinAge(), matchSearchFields.getMaxAge(), specs);
+        buildRangeSpec(SearchField.HEIGHT_IN_CM,
+                matchSearchFields.getMinHeightInCm(), matchSearchFields.getMaxHeightInCm(), specs);
+        buildCompatibilityScoreSpec(matchSearchFields, specs);
 
         if (specs.size() == 0) {
             return null;
         }
 
         Specification<Match> specificationCriteria = Specification.where(specs.pop());
-        specs.forEach(specificationCriteria::and);
+
+        for (Specification<Match> spec : specs) {
+            specificationCriteria = specificationCriteria.and(spec);
+        }
 
         return specificationCriteria;
     }
 
-    private void buildHasPhotoSpec(MatchFilter matchFilter, List<Specification<Match>> specs) {
-        if (matchFilter.getHasPhoto() == null) {
+    private void buildHasPhotoSpec(MatchSearchFields matchSearchFields, List<Specification<Match>> specs) {
+        if (matchSearchFields.getHasPhoto() == null) {
             return;
         }
 
-        Specification<Match> spec = matchFilter.getHasPhoto()
+        Specification<Match> spec = matchSearchFields.getHasPhoto()
                 ? (root, query, criteriaBuilder) ->
                 criteriaBuilder.isNotNull(getFieldPath(root, SearchField.MAIN_PHOTO))
                 : (root, query, criteriaBuilder) ->
@@ -50,24 +54,24 @@ public class MatchSpecificationsBuilder {
         specs.add(spec);
     }
 
-    private void buildIsFavouriteSpec(MatchFilter matchFilter, List<Specification<Match>> specs) {
-        if (matchFilter.getIsFavourite() == null) {
+    private void buildIsFavouriteSpec(MatchSearchFields matchSearchFields, List<Specification<Match>> specs) {
+        if (matchSearchFields.getIsFavourite() == null) {
             return;
         }
 
-        Specification<Match> spec = matchFilter.getIsFavourite()
+        Specification<Match> spec = matchSearchFields.getIsFavourite()
                 ? (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(getFieldPath(root, SearchField.FAVOURITE))
                 : (root, query, criteriaBuilder) -> criteriaBuilder.isFalse(getFieldPath(root, SearchField.FAVOURITE));
 
         specs.add(spec);
     }
 
-    private void buildInContactSpec(MatchFilter matchFilter, List<Specification<Match>> specs) {
-        if (matchFilter.getInContact() == null) {
+    private void buildInContactSpec(MatchSearchFields matchSearchFields, List<Specification<Match>> specs) {
+        if (matchSearchFields.getInContact() == null) {
             return;
         }
 
-        Specification<Match> spec = matchFilter.getInContact()
+        Specification<Match> spec = matchSearchFields.getInContact()
                 ? (root, query, criteriaBuilder) ->
                 criteriaBuilder.gt(getFieldPath(root, SearchField.CONTACTS_EXCHANGED), 0)
                 : (root, query, criteriaBuilder) ->
@@ -94,11 +98,11 @@ public class MatchSpecificationsBuilder {
         specs.add(spec);
     }
 
-    private void buildCompatibilityScoreSpec(MatchFilter matchFilter, List<Specification<Match>> specs) {
-        Double minLimit = matchFilter.getMinCompatibilityScoreInPercentage() == null
-                ? null : (double) matchFilter.getMinCompatibilityScoreInPercentage() / 100;
-        Double maxLimit = matchFilter.getMaxCompatibilityScoreInPercentage() == null
-                ? null : (double) matchFilter.getMaxCompatibilityScoreInPercentage() / 100;
+    private void buildCompatibilityScoreSpec(MatchSearchFields matchSearchFields, List<Specification<Match>> specs) {
+        Double minLimit = matchSearchFields.getMinCompatibilityScoreInPercentage() == null
+                ? null : (double) matchSearchFields.getMinCompatibilityScoreInPercentage() / 100;
+        Double maxLimit = matchSearchFields.getMaxCompatibilityScoreInPercentage() == null
+                ? null : (double) matchSearchFields.getMaxCompatibilityScoreInPercentage() / 100;
 
         if (minLimit == null && maxLimit == null) {
             return;

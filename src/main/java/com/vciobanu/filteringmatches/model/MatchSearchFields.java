@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.Range;
 
 
 @Data
-public class MatchFilter {
+public class MatchSearchFields {
     private Boolean hasPhoto;
     private Boolean inContact;
     private Boolean isFavourite;

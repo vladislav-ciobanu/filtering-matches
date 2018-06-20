@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vciobanu.filteringmatches.model.City;
 import com.vciobanu.filteringmatches.model.Match;
-import com.vciobanu.filteringmatches.model.MatchFilter;
+import com.vciobanu.filteringmatches.model.MatchSearchFields;
 import com.vciobanu.filteringmatches.service.MatchingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,7 @@ public class MatchingControllerTest {
     private MatchingService matchingService;
 
     @MockBean
-    private MatchFilter matchFilter;
+    private MatchSearchFields matchSearchFields;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -55,7 +55,7 @@ public class MatchingControllerTest {
 
         List<Match> matches = Arrays.asList(match1, match2);
 
-        when(matchingService.findMatches(Mockito.any(MatchFilter.class))).thenReturn(matches);
+        when(matchingService.findMatches(Mockito.any(MatchSearchFields.class))).thenReturn(matches);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/match")
                 .accept(MediaType.APPLICATION_JSON)

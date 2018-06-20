@@ -1,7 +1,7 @@
 package com.vciobanu.filteringmatches.controller;
 
 import com.vciobanu.filteringmatches.model.Match;
-import com.vciobanu.filteringmatches.model.MatchFilter;
+import com.vciobanu.filteringmatches.model.MatchSearchFields;
 import com.vciobanu.filteringmatches.service.MatchingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class MatchingController {
     @GetMapping(
             value = "/match", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<Match> match(@Valid MatchFilter matchFilter) {
-        return matchingService.findMatches(matchFilter);
+    public List<Match> match(@Valid MatchSearchFields matchSearchFields) {
+        return matchingService.findMatches(matchSearchFields);
     }
 }
